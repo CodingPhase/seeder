@@ -18,15 +18,13 @@ abstract class ModelSeeder extends Seeder
 
     public function seedModel($model, $tasks, $data = null)
     {
-        return $this->setModel($model)->seed($tasks, $data);
+        $this->setData($data);
+
+        return $this->setModel($model)->seed($tasks);
     }
 
-    public function seed($tasks, $data = null)
+    public function seed($tasks)
     {
-        if ($data) {
-            $this->setData($data);
-        }
-
         $this->command->info($this->getHeader());
         $collection = factory($this->getModel(), $this->getAmount())->make();
 
