@@ -1,8 +1,10 @@
 <?php
+
 namespace CodingPhase\Seeder;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 abstract class ModelSeeder extends Seeder
 {
@@ -14,7 +16,7 @@ abstract class ModelSeeder extends Seeder
 
     protected $data;
 
-    protected $compact;
+    protected $compact = null;
 
     public function seedModel($model, $tasks, $data = null)
     {
@@ -29,18 +31,18 @@ abstract class ModelSeeder extends Seeder
         $collection = factory($this->getModel(), $this->getAmount())->make();
 
         $bar = $this->command->getOutput()->createProgressBar(count($collection));
+        $compact = $this->isCompact();
 
-        $collection->each(function ($item, $key) use ($bar, $tasks) {
+        $collection->each(function ($item, $key) use ($bar, $tasks, $compact) {
             $this->fill($item, $key);
             $tasks($item, $key);
             $bar->advance();
 
-            if(! $this->isCompact()) {
+            if ($compact == false) {
                 $this->command->line('');
             }
         });
 
-        $bar->finish();
         $this->command->line("");
         $this->command->line("");
 
@@ -137,11 +139,11 @@ abstract class ModelSeeder extends Seeder
 
     private function isCompact()
     {
-        if($this->compact) {
-            return $this->compact;
+        if ($this->compact === null) {
+            return config('seeding.compact', true);
         }
 
-        return config('seeding.compact', true);
+        return $this->compact;
     }
 
     protected function setCompact($compact)
@@ -149,5 +151,25 @@ abstract class ModelSeeder extends Seeder
         $this->compact = $compact;
 
         return $this;
+    }
+
+    protected function truncate($tables)
+    {
+        $this->command->info('Truncate:');
+        $tables = collect($tables);
+
+        $bar = $this->command->getOutput()->createProgressBar(count($tables));
+
+        Schema::disableForeignKeyConstraints();
+
+        $tables->each(function ($table) use ($bar) {
+            DB::table($table)->truncate();
+            $bar->advance();
+        });
+
+        Schema::enableForeignKeyConstraints();
+
+        $this->command->line("");
+        $this->command->line("");
     }
 }
