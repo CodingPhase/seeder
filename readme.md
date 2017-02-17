@@ -76,8 +76,6 @@ $this->setAmount(30)->seedModel(\App\User::class, function ($user) {
 
 ### useData(array)
 Set data that will be used to fill resources. It overrides model factory data.
-- first user will have name `test` and email `test@test.com`
-- 25th user will have name `example` and email `example@example.com`
 ```php
 $data = [    
     1 => [
@@ -94,6 +92,8 @@ $this->useData($data)->seedModel(\App\User::class, function ($user) {
     $user->save();
 });
 ```
+- first user will have name `test` and email `test@test.com`
+- 25th user will have name `example` and email `example@example.com`
 
 ##Practical Examples
 ```php
