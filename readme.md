@@ -18,7 +18,10 @@ Add your new provider to the `providers` array of `config/app.php`:
       // ...
   ],
 ```
-
+Publish config
+```php
+php artisan vendor:publish  --provider="CodingPhase\Seeder\SeederServiceProvider"
+```
 ## Usage
 Extend your seeders with ModelSeeder:
 ```php
@@ -47,7 +50,7 @@ public function run
 ```
 
 ##API:
-### setAmount($number)
+### setAmount(int)
 Default amount of seeding resources that are seeded are stored in config. If you want to seed another value of resources, you can. 
 ```php
 $this->setAmount(30)->seedModel(\App\User::class, function ($user) {
@@ -55,7 +58,7 @@ $this->setAmount(30)->seedModel(\App\User::class, function ($user) {
 });
 ```
 
-### setHeader("Text")
+### setHeader(string)
 Define header before progress bar in output (default is model namespace)
 ```php
 $this->setHeader("Awesome Users")->seedModel(\App\User::class, function ($user) {
@@ -63,7 +66,7 @@ $this->setHeader("Awesome Users")->seedModel(\App\User::class, function ($user) 
 });
 ```
 
-### setCompact($bool)
+### setCompact(bool)
 Default true. Define style of Progress Bar.  
 ```php
 $this->setAmount(30)->seedModel(\App\User::class, function ($user) {
@@ -71,11 +74,11 @@ $this->setAmount(30)->seedModel(\App\User::class, function ($user) {
 });
 ```
 
-### useData($data)
+### useData(array)
 Set data that will be used to fill resources. It overrides model factory data.
+- first user will have name `test` and email `test@test.com`
+- 25th user will have name `example` and email `example@example.com`
 ```php
-//first user will have name `test` and email `test@test.com`
-//25th user will have name `example` and email `example@example.com`
 $data = [    
     1 => [
         'name' => 'test',
