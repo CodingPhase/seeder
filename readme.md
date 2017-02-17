@@ -80,8 +80,7 @@ $data = [
     1 => [
         'name' => 'test',
         'email' => 'test@test.com'
-    ],
-    
+    ],    
     25 => [
         'name' => 'example
         'email' => 'example@example.com',
@@ -95,7 +94,7 @@ $this->useData($data)->seedModel(\App\User::class, function ($user) {
 
 ##Practical Examples
 ```php
-$admins = [
+$adminsData = [
     1 => [
         'name' => 'test',
         'email' => 'test@test.com',
@@ -108,7 +107,7 @@ $admins = [
     ],
 ];
 
-$this->useData($admins)
+$admins = $this->useData($adminsData)
     ->setAmount(5)
     ->setHeader("Seeding Admins")
     ->setCompact(false)
@@ -117,7 +116,7 @@ $this->useData($admins)
         $user->save();
     });
 
-$this->setHeader("Seeding Regular Users")
+$users = $this->setHeader("Seeding Regular Users")
     ->seedModel(\App\User::class, function ($user) {
         $user->save();
     });
