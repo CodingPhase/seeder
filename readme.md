@@ -1,12 +1,12 @@
-# Fractalfy
-Laravel Wrapper for Fractal
+# Seeder
+Easy seeding database for Laravel Applications
 
 ## Usage
 
 ### Step 1: Install Through Composer
 
 ```
-composer require codingphase/fractalfy
+composer require codingphase/seeder
 ```
 
 ### Step 2: Register Service Provider
@@ -14,57 +14,113 @@ Add your new provider to the `providers` array of `config/app.php`:
 ```php
   'providers' => [
       // ...
-      CodingPhase\Fractalfy\FractalfyServiceProvider::class,
+      CodingPhase\Seeder\SeederServiceProvider::class,
       // ...
   ],
 ```
 
-## Fractal methods
-Extend your controller with FractalfyController
+## Usage
+Extend your seeders with ModelSeeder:
 ```php
-class DashboardController extends FractalfyController
+use CodingPhase\Seeder\ModelSeeder;
+
+class UsersTableSeeder extends ModelSeeder
 {
     ...
 }
 ```
 
-Return collection
+Implement run method:
 ```php
-$users = Users::all();
-return $this->fractal
-    ->collection($users, new UserTransformer)
-    ->get();
+/**
+ * Run the database seeds.
+ *
+ * @return void
+ */
+public function run
+{
+    //Example
+    $users = $this->seedModel(\App\User::class, function ($user) {
+        $user->save();
+    });
+}
 ```
 
-Return resource with pagination
+##API:
+### setAmount($number)
+Default amount of seeding resources that are seeded are stored in config. If you want to seed another value of resources, you can. 
 ```php
-$users = Users::all();
-return $this->fractal
-    ->paginate($users, new UserTransformer)
-    ->get();
+$this->setAmount(30)->seedModel(\App\User::class, function ($user) {
+    $user->save();
+});
 ```
 
-## Fractalfy Helpers
-Use Fractalfy Helpers (already included in FractalfyController)
-
-Popular
+### setHeader("Text")
+Define header before progress bar in output (default is model namespace)
 ```php
-return $this->respondOK();
-return $this->respondNotFound();
-return $this->respondUnauthorized();
-return $this->respondUnprocessable();
-return $this->respondBadRequest();
-return $this->respondWithSuccess(200); //any success code
-return $this->respondWithError(400); //any success code
+$this->setHeader("Awesome Users")->seedModel(\App\User::class, function ($user) {
+    $user->save();
+});
 ```
 
-Other
+### setCompact($bool)
+Default true. Define style of Progress Bar.  
 ```php
-return $this->respondOK($message); //pass message to respond
-return $this->setMessage($message)->respondOK();
-return $this->setMessage($message)->setStatusCode($statuscode)->respondWithSuccess(); 
-return $this->setMessage($message)->setStatusCode($statuscode)->respondWithError(); 
+$this->setAmount(30)->seedModel(\App\User::class, function ($user) {
+    $user->save();
+});
 ```
 
+### useData($data)
+Set data that will be used to fill resources. It overrides model factory data.
+```php
+//first user will have name `test` and email `test@test.com`
+//25th user will have name `example` and email `example@example.com`
+$data = [    
+    1 => [
+        'name' => 'test',
+        'email' => 'test@test.com'
+    ],
+    
+    25 => [
+        'name' => 'example
+        'email' => 'example@example.com',
+    ],
+];
+
+$this->useData($data)->seedModel(\App\User::class, function ($user) {
+    $user->save();
+});
+```
+
+##Practical Examples
+```php
+$admins = [
+    1 => [
+        'name' => 'test',
+        'email' => 'test@test.com',
+        'password' => bcrypt('123456')
+    ],
+    4 => [
+        'name' => 'test4',
+        'email' => 'test4@test.com',
+        'password' => bcrypt('654321')
+    ],
+];
+
+$this->useData($admins)
+    ->setAmount(5)
+    ->setHeader("Seeding Admins")
+    ->setCompact(false)
+    ->seedModel(\App\User::class, function ($user) {
+        $user->admin = 1;
+        $user->save();
+    });
+
+$this->setHeader("Seeding Regular Users")
+    ->seedModel(\App\User::class, function ($user) {
+        $user->save();
+    });
+```
 
 

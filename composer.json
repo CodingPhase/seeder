@@ -1,6 +1,6 @@
 {
     "name": "codingphase/seeder",
-    "description": "Easy seeding database with for Laravel Applications.",
+    "description": "Easy seeding database for Laravel Applications.",
     "keywords": ["seed", "laravel"],
     "license": "MIT",
     "authors": [

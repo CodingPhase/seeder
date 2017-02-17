@@ -10,15 +10,15 @@ abstract class ModelSeeder extends Seeder
 
     protected $model;
 
-    protected $defaultNumber;
-
     protected $amount;
 
     protected $data;
 
+    protected $compact;
+
     public function seedModel($model, $tasks, $data = null)
     {
-        $this->setModel($model)->seed($tasks, $data);
+        return $this->setModel($model)->seed($tasks, $data);
     }
 
     public function seed($tasks, $data = null)
@@ -36,11 +36,19 @@ abstract class ModelSeeder extends Seeder
             $this->fill($item, $key);
             $tasks($item, $key);
             $bar->advance();
+
+            if(! $this->isCompact()) {
+                $this->command->line('');
+            }
         });
 
         $bar->finish();
         $this->command->line("");
         $this->command->line("");
+
+        $this->clear();
+
+        return $collection;
     }
 
     public function setHeader($header)
@@ -108,7 +116,7 @@ abstract class ModelSeeder extends Seeder
 
     private function getData()
     {
-        return $this->data();
+        return $this->data;
     }
 
     private function fill($item, $key)
@@ -118,5 +126,26 @@ abstract class ModelSeeder extends Seeder
         if ($this->getData()->has($key)) {
             $item->fill($this->data[$key]);
         }
+    }
+
+    private function clear()
+    {
+        $this->header = null;
+        $this->data = collect();
+        $this->model = null;
+        $this->amount = null;
+        $this->compact = true;
+    }
+
+    private function isCompact()
+    {
+        return config('seeding.compact', true);
+    }
+
+    protected function setCompact($compact)
+    {
+        $this->compact = $compact;
+
+        return $this;
     }
 }

@@ -25,7 +25,7 @@ class SeederServiceProvider extends ServiceProvider
     {
 
     }
-    
+
     /**
      * Handle configuration
      */
