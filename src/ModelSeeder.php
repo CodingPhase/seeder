@@ -139,6 +139,10 @@ abstract class ModelSeeder extends Seeder
 
     private function isCompact()
     {
+        if($this->compact) {
+            return $this->compact;
+        }
+
         return config('seeding.compact', true);
     }
 
