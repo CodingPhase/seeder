@@ -85,7 +85,7 @@ $data = [
         'email' => 'test@test.com'
     ],    
     25 => [
-        'name' => 'example
+        'name' => 'example'
         'email' => 'example@example.com',
     ],
 ];
