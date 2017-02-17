@@ -1,7 +1,7 @@
 # Seeder
 Easy seeding database for Laravel Applications
 
-## Usage
+## Installation
 
 ### Step 1: Install Through Composer
 
@@ -97,32 +97,45 @@ $this->useData($data)->seedModel(\App\User::class, function ($user) {
 
 ##Practical Examples
 ```php
-$adminsData = [
-    1 => [
-        'name' => 'test',
-        'email' => 'test@test.com',
-        'password' => bcrypt('123456')
-    ],
-    4 => [
-        'name' => 'test4',
-        'email' => 'test4@test.com',
-        'password' => bcrypt('654321')
-    ],
-];
+use CodingPhase\Seeder\ModelSeeder;
 
-$admins = $this->useData($adminsData)
-    ->setAmount(5)
-    ->setHeader("Seeding Admins")
-    ->setCompact(false)
-    ->seedModel(\App\User::class, function ($user) {
-        $user->admin = 1;
-        $user->save();
-    });
-
-$users = $this->setHeader("Seeding Regular Users")
-    ->seedModel(\App\User::class, function ($user) {
-        $user->save();
-    });
+class UsersTableSeeder extends ModelSeeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run
+    {
+        $adminsData = [
+            1 => [
+                'name' => 'test',
+                'email' => 'test@test.com',
+                'password' => bcrypt('123456')
+            ],
+            4 => [
+                'name' => 'test4',
+                'email' => 'test4@test.com',
+                'password' => bcrypt('654321')
+            ],
+        ];
+        
+        $admins = $this->useData($adminsData)
+            ->setAmount(5)
+            ->setHeader("Seeding Admins")
+            ->setCompact(false)
+            ->seedModel(\App\User::class, function ($user) {
+                $user->admin = 1;
+                $user->save();
+            });
+        
+        $users = $this->setHeader("Seeding Regular Users")
+            ->seedModel(\App\User::class, function ($user) {
+                $user->save();
+            });
+    }
+}
 ```
 
 
