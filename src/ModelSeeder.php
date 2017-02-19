@@ -20,7 +20,9 @@ abstract class ModelSeeder extends Seeder
 
     public function seedModel($model, $tasks, $data = null)
     {
-        $this->setData($data);
+        if ($data != null) {
+            $this->setData($data);
+        }
 
         return $this->setModel($model)->seed($tasks);
     }
