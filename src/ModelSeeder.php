@@ -18,6 +18,11 @@ abstract class ModelSeeder extends Seeder
 
     protected $compact = null;
 
+    public function __construct()
+    {
+        $this->data = collect();
+    }
+
     public function seedModel($model, $tasks, $data = null)
     {
         if ($data != null) {
