@@ -33,8 +33,10 @@ return [
     |
     */
 
-    'models_amounts' => [
-        'users' => 10,
+    'models' => [
+        'amounts' => [
+            'users' => 10,
+        ],
     ],
 
 ];

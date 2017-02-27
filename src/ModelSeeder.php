@@ -99,7 +99,7 @@ abstract class ModelSeeder extends Seeder
             return $this->amount;
         }
 
-        return config('seeding.models_amounts.' . $this->getModelConfigName(), config('seeding.default_amount'));
+        return config('seeding.models.amounts.' . $this->getModelConfigName(), config('seeding.default_amount'));
     }
 
     private function getModelConfigName()
