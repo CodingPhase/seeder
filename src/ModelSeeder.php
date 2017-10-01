@@ -16,13 +16,24 @@ abstract class ModelSeeder extends Seeder
 
     protected $data;
 
+    protected $state = null;
+
     protected $compact = null;
 
+    /**
+     * ModelSeeder constructor.
+     */
     public function __construct()
     {
         $this->data = collect();
     }
 
+    /**
+     * @param $model
+     * @param $tasks
+     * @param null $data
+     * @return mixed
+     */
     public function seedModel($model, $tasks, $data = null)
     {
         if ($data != null) {
@@ -32,10 +43,19 @@ abstract class ModelSeeder extends Seeder
         return $this->setModel($model)->seed($tasks);
     }
 
+    /**
+     * @param $tasks
+     * @return mixed
+     */
     public function seed($tasks)
     {
         $this->command->info($this->getHeader());
-        $collection = factory($this->getModel(), $this->getAmount())->make();
+
+        if($this->state) {
+            $collection = factory($this->getModel(), $this->getAmount())->state($this->getState())->make();
+        } else {
+            $collection = factory($this->getModel(), $this->getAmount())->make();
+        }
 
         $bar = $this->command->getOutput()->createProgressBar(count($collection));
         $compact = $this->isCompact();
@@ -58,6 +78,10 @@ abstract class ModelSeeder extends Seeder
         return $collection;
     }
 
+    /**
+     * @param $header
+     * @return $this
+     */
     public function setHeader($header)
     {
         $this->header = $header;
@@ -65,6 +89,9 @@ abstract class ModelSeeder extends Seeder
         return $this;
     }
 
+    /**
+     * @return string
+     */
     private function getHeader()
     {
         if ($this->header) {
@@ -74,6 +101,10 @@ abstract class ModelSeeder extends Seeder
         return 'Model: ' . $this->model;
     }
 
+    /**
+     * @param $model
+     * @return $this
+     */
     public function setModel($model)
     {
         $this->model = $model;
@@ -81,11 +112,18 @@ abstract class ModelSeeder extends Seeder
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     private function getModel()
     {
         return $this->model;
     }
 
+    /**
+     * @param $amount
+     * @return $this
+     */
     public function setAmount($amount)
     {
         $this->amount = $amount;
@@ -93,6 +131,9 @@ abstract class ModelSeeder extends Seeder
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     private function getAmount()
     {
         if ($this->amount) {
@@ -102,6 +143,9 @@ abstract class ModelSeeder extends Seeder
         return config('seeding.models.amounts.' . $this->getModelConfigName(), config('seeding.default_amount'));
     }
 
+    /**
+     * @return mixed
+     */
     private function getModelConfigName()
     {
         $collection = collect(explode('\\', mb_strtolower(str_plural($this->getModel()))));
@@ -109,11 +153,19 @@ abstract class ModelSeeder extends Seeder
         return $collection->last();
     }
 
+    /**
+     * @param $data
+     * @return ModelSeeder
+     */
     public function useData($data)
     {
         return $this->setData($data);
     }
 
+    /**
+     * @param $data
+     * @return $this
+     */
     private function setData($data)
     {
         $this->data = collect($data);
@@ -121,11 +173,18 @@ abstract class ModelSeeder extends Seeder
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     private function getData()
     {
         return $this->data;
     }
 
+    /**
+     * @param $item
+     * @param $key
+     */
     private function fill($item, $key)
     {
         $key = $key + 1;
@@ -135,6 +194,9 @@ abstract class ModelSeeder extends Seeder
         }
     }
 
+    /**
+     *
+     */
     private function clear()
     {
         $this->header = null;
@@ -144,6 +206,9 @@ abstract class ModelSeeder extends Seeder
         $this->compact = true;
     }
 
+    /**
+     * @return null
+     */
     private function isCompact()
     {
         if ($this->compact === null) {
@@ -153,6 +218,29 @@ abstract class ModelSeeder extends Seeder
         return $this->compact;
     }
 
+    /**
+     * @return null
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param null $state
+     * @return $this
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @param $compact
+     * @return $this
+     */
     protected function setCompact($compact)
     {
         $this->compact = $compact;
@@ -160,6 +248,9 @@ abstract class ModelSeeder extends Seeder
         return $this;
     }
 
+    /**
+     * @param $tables
+     */
     protected function truncate($tables)
     {
         $this->command->info('Truncate:');
