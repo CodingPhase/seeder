@@ -52,7 +52,7 @@ abstract class ModelSeeder extends Seeder
         $this->command->info($this->getHeader());
 
         if($this->state) {
-            $collection = factory($this->getModel(), $this->getAmount())->state($this->getState())->make();
+            $collection = factory($this->getModel(), $this->getAmount())->states($this->getState())->make();
         } else {
             $collection = factory($this->getModel(), $this->getAmount())->make();
         }
