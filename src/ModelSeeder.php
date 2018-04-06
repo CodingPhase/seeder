@@ -20,6 +20,8 @@ abstract class ModelSeeder extends Seeder
 
     protected $compact = null;
 
+    protected $incrementKey = 1;
+
     /**
      * ModelSeeder constructor.
      */
@@ -70,8 +72,8 @@ abstract class ModelSeeder extends Seeder
             }
         });
 
-        $this->command->line("");
-        $this->command->line("");
+        $this->command->line('');
+        $this->command->line('');
 
         $this->clear();
 
@@ -155,10 +157,15 @@ abstract class ModelSeeder extends Seeder
 
     /**
      * @param $data
+     * @param null $incrementKey
      * @return ModelSeeder
      */
-    public function useData($data)
+    public function useData($data, $incrementKey = null)
     {
+        if($incrementKey) {
+            $this->incrementKey = $incrementKey;
+        }
+
         return $this->setData($data);
     }
 
@@ -187,7 +194,7 @@ abstract class ModelSeeder extends Seeder
      */
     private function fill($item, $key)
     {
-        $key = $key + 1;
+        $key += $this->incrementKey;
 
         if ($this->getData()->has($key)) {
             $item->fill($this->data[$key]);
@@ -204,6 +211,7 @@ abstract class ModelSeeder extends Seeder
         $this->model = null;
         $this->amount = null;
         $this->compact = true;
+        $this->incrementKey = 1;
     }
 
     /**
@@ -238,6 +246,17 @@ abstract class ModelSeeder extends Seeder
     }
 
     /**
+     * @param int $incrementKey
+     * @return ModelSeeder
+     */
+    public function setIncrementKey($incrementKey)
+    {
+        $this->incrementKey = $incrementKey;
+
+        return $this;
+    }
+
+    /**
      * @param $compact
      * @return $this
      */
@@ -267,7 +286,7 @@ abstract class ModelSeeder extends Seeder
 
         Schema::enableForeignKeyConstraints();
 
-        $this->command->line("");
-        $this->command->line("");
+        $this->command->line('');
+        $this->command->line('');
     }
 }
