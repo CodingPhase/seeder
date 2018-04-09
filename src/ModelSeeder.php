@@ -162,7 +162,7 @@ abstract class ModelSeeder extends Seeder
      */
     public function useData($data, $incrementKey = null)
     {
-        if($incrementKey) {
+        if($incrementKey !== null) {
             $this->incrementKey = $incrementKey;
         }
 
