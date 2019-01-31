@@ -197,7 +197,12 @@ abstract class ModelSeeder extends Seeder
         $key += $this->incrementKey;
 
         if ($this->getData()->has($key)) {
-            $item->fill($this->data[$key]);
+            $fields = $this->data[$key];
+            $fieldsWithoutArrays = collect($fields)->filter(function ($field) {
+                return ! is_array($field);
+            });
+
+            $item->fill($fieldsWithoutArrays->toArray());
         }
     }
 
